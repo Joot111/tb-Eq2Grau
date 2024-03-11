@@ -1,6 +1,7 @@
 using Eq2Grau.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Drawing;
 
 namespace Eq2Grau.Controllers
 {
@@ -44,6 +45,49 @@ namespace Eq2Grau.Controllers
              *  se não posso calcular (else)
              *      enviar mensagens de erro para o cliente (else)
              */
+
+            double a = double.Parse(A);
+            double b = double.Parse(B);
+            double c = double.Parse(C);
+
+            if (double.IsNaN(a) || double.IsNaN(b) || double.IsNaN(c))
+            {
+                Console.WriteLine("Erro: Os valores inseridos não são números válidos.");
+                return null;
+            }
+
+            else if (a != 0)
+            {
+                Console.WriteLine("Erro: A equação não é de 2º Grau.");
+                return null;
+            }
+
+            // Calcule o delta
+            double delta = b * b - 4 * a * c;
+
+            // Determinar as raízes
+            double x1, x2;
+
+            if (delta > 0)
+            {
+                // Há 2 raízes reais distintas
+                x1 = (-b + Math.Sqrt(delta)) / (2 * a);
+                x2 = (-b - Math.Sqrt(delta)) / (2 * a);
+                return Ok($"As raízes são: x1 = {x1} e x2 = {x2}");
+            }
+            else if (delta == 0)
+            {
+                // Há 2 raízes reais iguais
+                x1 = -b / (2 * a);
+                return Ok($"A raiz é: x = {x1}");
+            }
+            else
+            {
+                // Há 2 raízes complexas conjugadas
+                double parteReal = -b / (2 * a);
+                double parteImaginaria = Math.Sqrt(-delta) / (2 * a);
+                return Ok($"As raízes são: x1 = {parteReal} + {parteImaginaria}i e x2 = {parteReal} - {parteImaginaria}i");
+            }
 
             return View();
         }
